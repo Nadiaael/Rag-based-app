@@ -23,6 +23,8 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Agg')  # Set backend for headless operation
 import io
+from flask import send_file
+
 
 # Configure logging
 logging.basicConfig(
@@ -1294,7 +1296,7 @@ def generate_pdf_report(summary, visualizations, tables, filename, language="fr"
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return send_file('index.html')
 
 @app.route('/api/query', methods=['POST'])
 def process_query():
