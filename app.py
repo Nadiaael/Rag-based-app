@@ -38,7 +38,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Configuration
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "REMOVED_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 CHROMADB_HOST = os.environ.get("CHROMADB_HOST", "chromadb-poc-0428.eastus.azurecontainer.io")
 CHROMADB_PORT = int(os.environ.get("CHROMADB_PORT", "8000"))
 CHROMA_COLLECTION = "document_chunks"  
