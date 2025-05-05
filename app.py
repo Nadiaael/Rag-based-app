@@ -21,6 +21,8 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 import matplotlib.pyplot as plt
 import matplotlib
+from dotenv import load_dotenv
+load_dotenv()
 matplotlib.use('Agg')  # Set backend for headless operation
 import io
 from flask import send_file
@@ -39,8 +41,8 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-CHROMADB_HOST = os.environ.get("CHROMADB_HOST", "chromadb-poc-0428.eastus.azurecontainer.io")
-CHROMADB_PORT = int(os.environ.get("CHROMADB_PORT", "8000"))
+CHROMADB_HOST = os.environ.get("CHROMADB_HOST")
+CHROMADB_PORT = int(os.environ.get("CHROMADB_PORT"))
 CHROMA_COLLECTION = "document_chunks"  
 TEMP_UPLOAD_FOLDER = "/tmp/temp_uploads" if os.environ.get('WEBSITE_SITE_NAME') else "temp_uploads"
 
