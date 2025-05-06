@@ -1,21 +1,24 @@
 #!/bin/bash
+
 # Install system dependencies
 apt-get update && \
 apt-get install -y \
+    build-essential \
+    python3-dev \
     tesseract-ocr \
     libsm6 \
     libxext6 \
-    libxrender-dev \
-    libgl1-mesa-glx \
+    libgl1 \
     poppler-utils \
     libleptonica-dev \
-    libxml2-dev \
-    libxslt1-dev \
+    libmupdf-dev \
+    libjpeg-dev \
     zlib1g-dev
 
-# Install Python packages
-pip install --upgrade pip && \
-pip install -r requirements.txt && \
+# Configure Python environment
+export PIP_DEFAULT_TIMEOUT=300
+python -m pip install --upgrade pip
+python -m pip install --no-cache-dir -r requirements.txt
 
-# Start Gunicorn
-gunicorn --bind=0.0.0.0:8000 --timeout 600 app:app
+# Start Gunicorn with explicit Python path
+/opt/python/3.10.8/bin/python -m gunicorn --bind=0.0.0.0:8000 --timeout 600 app:app
