@@ -1,12 +1,21 @@
 #!/bin/bash
+# Install system dependencies
+apt-get update && \
+apt-get install -y \
+    tesseract-ocr \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgl1-mesa-glx \
+    poppler-utils \
+    libleptonica-dev \
+    libxml2-dev \
+    libxslt1-dev \
+    zlib1g-dev
 
-# Install Tesseract OCR (required for pytesseract)
-if ! command -v tesseract &> /dev/null; then
-    echo "Installing Tesseract OCR..."
-    apt-get update
-    apt-get install -y tesseract-ocr
-fi
+# Install Python packages
+pip install --upgrade pip && \
+pip install -r requirements.txt && \
 
-# Run the application
-echo "Starting application..."
-gunicorn --bind=0.0.0.0:8000 --timeout 120 app:app
+# Start Gunicorn
+gunicorn --bind=0.0.0.0:8000 --timeout 600 app:app
