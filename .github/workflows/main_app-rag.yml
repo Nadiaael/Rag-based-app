@@ -1,11 +1,9 @@
 name: Build and deploy Python app to Azure Web App - app-rag
-
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -13,13 +11,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-
     # Set correct Python version (Azure supports up to 3.10)
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-
     # Install system dependencies (critical for PyMuPDF, pytesseract, etc.)
     - name: Install system packages
       run: |
@@ -29,18 +25,16 @@ jobs:
           python3-dev \
           tesseract-ocr \
           libsm6 libxext6 libgl1
-
-    # Make startup.sh executable
-    - name: Set permissions
+    # Make startup.sh executable and verify it exists
+    - name: Set permissions and verify files
       run: |
         chmod +x startup.sh
-        ls -la startup.sh  # Verify
-
-    # Create ZIP including hidden files
+        ls -la
+        cat startup.sh
+    # Create ZIP including hidden files and maintain file permissions
     - name: Create deployment package
       run: |
         zip -r deploy.zip . -x "*.git*" "*.github*" "venv/*"
-
     # Azure deployment
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v3
