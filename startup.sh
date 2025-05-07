@@ -54,28 +54,3 @@ echo "Starting Gunicorn server..." >> \$LOG_FILE
 cd /home/site/wwwroot
 gunicorn --bind=0.0.0.0:8000 --timeout 600 app:app
 EOL
-
-# 4. Make sure to include a web.config file for Azure
-cat > web.config << EOL
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <system.webServer>
-    <handlers>
-      <add name="PythonHandler" path="*" verb="*" modules="httpPlatformHandler" resourceType="Unspecified"/>
-    </handlers>
-    <httpPlatform processPath="bash" arguments="startup.sh" requestTimeout="00:04:00" startupTimeLimit="120" startupRetryCount="3" stdoutLogEnabled="true" stdoutLogFile="log\stdout.log">
-      <environmentVariables>
-        <environmentVariable name="PORT" value="%HTTP_PLATFORM_PORT%" />
-      </environmentVariables>
-    </httpPlatform>
-  </system.webServer>
-</configuration>
-EOL
-
-# 5. Ensure app.py can be found
-echo "Checking app.py existence..." 
-if [ ! -f app.py ]; then
-    echo "WARNING: app.py not found in current directory. Make sure it exists!"
-fi
-
-echo "Setup completed. Now you should commit these changes and push to GitHub."
