@@ -1,7 +1,12 @@
 #!/bin/bash
 
+# Make sure the script doesn't fail silently
+set -e
+echo "Starting deployment process..."
+
 # Install system dependencies
-apt-get update && \
+echo "Installing system dependencies..."
+apt-get update
 apt-get install -y \
     build-essential \
     python3-dev \
@@ -16,9 +21,27 @@ apt-get install -y \
     zlib1g-dev
 
 # Configure Python environment
+echo "Setting up Python environment..."
 export PIP_DEFAULT_TIMEOUT=300
 python -m pip install --upgrade pip
 python -m pip install --no-cache-dir -r requirements.txt
 
-# Start Gunicorn with explicit Python path
-/opt/python/3.10.8/bin/python -m gunicorn --bind=0.0.0.0:8000 --timeout 600 app:app
+# Create temp uploads directory
+echo "Creating temp uploads directory..."
+mkdir -p /home/site/wwwroot/temp_uploads
+chmod 777 /home/site/wwwroot/temp_uploads
+
+# Check if Gunicorn is installed
+echo "Checking Gunicorn installation..."
+if ! python -m pip list | grep -q gunicorn; then
+    echo "Gunicorn not found, installing..."
+    python -m pip install gunicorn
+fi
+
+# Debug: List files in directory
+echo "Contents of current directory:"
+ls -la
+
+# Start Gunicorn
+echo "Starting Gunicorn server..."
+python -m gunicorn --bind=0.0.0.0:8000 --timeout 600 app:app
