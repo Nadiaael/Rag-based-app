@@ -1,2 +1,5 @@
+cat > .deployment << EOL
 [config]
 SCM_DO_BUILD_DURING_DEPLOYMENT = false
+STARTUP_COMMAND = bash ./startup.sh
+EOL
