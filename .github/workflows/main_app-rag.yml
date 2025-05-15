@@ -1,37 +1,35 @@
 name: Build and deploy Python app to Azure Web App - app-rag
-
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: Production
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-
       - name: Set permissions and verify files
         run: |
           chmod +x startup.sh
           ls -la
-
       - name: Create deployment package
         run: |
           zip -r deploy.zip . -x "*.git*" "*.github*" "venv/*"
-
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v2.2.9
+      # Azure Login Step with service principal
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # Azure Deployment Step
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
         with:
           app-name: 'app-rag'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: deploy.zip
