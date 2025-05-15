@@ -29,7 +29,7 @@ jobs:
           zip -r deploy.zip . -x "*.git*" "*.github*" "venv/*"
 
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2.2.9
         with:
           app-name: 'app-rag'
           slot-name: 'Production'
