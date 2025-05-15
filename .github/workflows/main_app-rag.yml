@@ -1,40 +1,37 @@
-cat > .github/workflows/main_app-rag.yml << EOL
 name: Build and deploy Python app to Azure Web App - app-rag
+
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: Production
-    
+
     steps:
-    - uses: actions/checkout@v4
-    # Set correct Python version (Azure supports up to 3.10)
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    
-    # Make startup.sh executable and verify it exists
-    - name: Set permissions and verify files
-      run: |
-        chmod +x startup.sh
-        ls -la
-    
-    # Create ZIP including hidden files and maintain file permissions
-    - name: Create deployment package
-      run: |
-        zip -r deploy.zip . -x "*.git*" "*.github*" "venv/*"
-    
-    # Azure deployment
-    - name: 'Deploy to Azure Web App'
-      uses: azure/webapps-deploy@v3
-      with:
-        app-name: 'app-rag'
-        slot-name: 'Production'
-        publish-profile: \${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: deploy.zip
-EOL
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Set permissions and verify files
+        run: |
+          chmod +x startup.sh
+          ls -la
+
+      - name: Create deployment package
+        run: |
+          zip -r deploy.zip . -x "*.git*" "*.github*" "venv/*"
+
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'app-rag'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: deploy.zip
